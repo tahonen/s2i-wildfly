@@ -41,10 +41,9 @@ ADD ./contrib/settings.xml $HOME/.m2/
 # Copy the S2I scripts from the specific language image to $STI_SCRIPTS_PATH
 COPY ./s2i/bin/ $STI_SCRIPTS_PATH
 
-RUN curl -o newrelic.zip http://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip && unzip newrelic.zip -d /wildfly && cd /wildfly/newrelic
-
-RUN sed -ie "s/<%= license_key %>/${NEWRELIC_LICENSE}/g" newrelic.yml && sed -ie "s/My Application/${NEWRELIC_APPNAME}/g" newrelic.yml
-RUN cd ../bin && echo 'export JAVA_OPTS="$JAVA_OPTS -javaagent:/wildfly/newrelic/newrelic.jar"' >> standalone.conf
+RUN curl -o newrelic.zip http://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip && unzip newrelic.zip -d /wildfly
+RUN sed -ie "s/<%= license_key %>/${NEWRELIC_LICENSE}/g" /wildfly/newrelic/newrelic.yml && sed -ie "s/My Application/${NEWRELIC_APPNAME}/g" /wildfly/newrelic/newrelic.yml
+RUN echo 'export JAVA_OPTS="$JAVA_OPTS -javaagent:/wildfly/newrelic/newrelic.jar"' >> /wildfly/bin/standalone.conf
 
 RUN chown -R 1001:0 /wildfly && chown -R 1001:0 $HOME && \
     chmod -R ug+rwX /wildfly && \
